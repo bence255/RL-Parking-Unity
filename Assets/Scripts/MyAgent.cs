@@ -8,7 +8,7 @@ using Unity.MLAgents.Sensors;
 using Unity.VisualScripting;
 
 
-public class MyAgent1 : Agent
+public class MyAgent : Agent
 {
 
     
@@ -19,25 +19,69 @@ public class MyAgent1 : Agent
     public float brake = 0;
     public float gas = 0;
 
-    public Transform TargetTransform;
+    private GameObject parkingCar;
+    public GameObject parkingCar0;
+    public GameObject parkingCar1;
+    public GameObject parkingCar2;
+    public GameObject parkingCar3;
+    public GameObject parkingCar4;
 
-
+    public Vector3[] positions;
     
-
-
-    //barmennyi lehet
-    private int cars = 4;
-
 
 
     public override void OnEpisodeBegin()
     {
+        int destination = Random.Range(0, 16);
+
+        for (int i = 0; i < 16; i++)
+        {
+            // Skips destination position
+            if (i == destination)
+            {
+                continue;
+            }
+
+            float carSpawn = Random.Range(0f, 1f);
+
+            // Randomize color
+            if (carSpawn < 0.2f)
+            {
+                parkingCar = parkingCar0;
+            }
+            else if (carSpawn < 0.4f)
+            {
+                parkingCar = parkingCar1;
+            }
+            else if (carSpawn < 0.6f)
+            {
+                parkingCar = parkingCar2;
+            }
+            else if (carSpawn < 0.8f)
+            {
+                parkingCar = parkingCar3;
+            }
+            else
+            {
+                parkingCar = parkingCar4;
+            }
+
+            // Randomize which positions are occupied
+            if (carSpawn < 0.25f)
+            {
+                Instantiate(parkingCar, positions[i], Quaternion.Euler(0,-90,0));
+            }
+            else if (carSpawn < 0.5f)
+            {
+                Instantiate(parkingCar, positions[i], Quaternion.Euler(0,90,0));
+            }
+            
 
 
-       
-
+        }
     }
 
+    /*
     public List<Vector2> ParkingCarsCoords()
     {
         //visszaad egy listat amin Vector2() tipusu objektumok vannak. Ezek lesznek a parkolo
@@ -86,6 +130,7 @@ public class MyAgent1 : Agent
 
 
     }
+    */
 
     public override void CollectObservations(VectorSensor sensor)
     {
