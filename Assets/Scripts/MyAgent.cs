@@ -10,107 +10,146 @@ using Unity.VisualScripting;
 
 public class MyAgent : Agent
 {
-
-    
-
-
     //Azert publicok mert a car controller igy tudja majd olvasni
     public float steering = 0f;
     public float brakes = 0f;
     public float gas = 0f;
 
-    public Transform TargetTransform;
+    public GameObject parkingCar;
+    /*
+    public GameObject parkingCar0;
+    public GameObject parkingCar1;
+    public GameObject parkingCar2;
+    public GameObject parkingCar3;
+    public GameObject parkingCar4;
+    */
 
+    public Vector3[] positions;
+    List<GameObject> cars = new List<GameObject>();
 
-    
-
-
-    //barmennyi lehet
-    private int cars = 4;
-
-
+    private int destination = 0;
 
     public override void OnEpisodeBegin()
     {
-
-
-       
-
-    }
-
-    public List<Vector2> ParkingCarsCoords()
-    {
-        //visszaad egy listat amin Vector2() tipusu objektumok vannak. Ezek lesznek a parkolo
-        //autokanka a koordinatai
-
-
-
-        //Nem randomizalo szkriptet csinaltam... Szerintem nincs ra szukseg mert
-        //osszesen csak 16 hely van es mindig meg kene nezni hogy a random generalt hely
-        //nem-e foglalt mar. 
-
-        List<Vector2> spaces = new List<Vector2>();
-
-        // bal oldal
-        spaces.Add(new Vector2(-4, 7));
-        spaces.Add(new Vector2(-4, 5));
-        spaces.Add(new Vector2(-4, 3));
-        spaces.Add(new Vector2(-4, 1));
-        spaces.Add(new Vector2(-4, -1));
-        spaces.Add(new Vector2(-4, -3));
-        spaces.Add(new Vector2(-4, -5));
-        spaces.Add(new Vector2(-4, -7));
-
-        // jobb oldal
-        spaces.Add(new Vector2(4, 7));
-        spaces.Add(new Vector2(4, 5));
-        spaces.Add(new Vector2(4, 3));
-        spaces.Add(new Vector2(4, 1));
-        spaces.Add(new Vector2(4, -1));
-        spaces.Add(new Vector2(4, -3));
-        spaces.Add(new Vector2(4, -5));
-        spaces.Add(new Vector2(4, -7));
-
-        //majd kivalasztunk x darabot a listabol
-        
-        List<Vector2> ChosenCords = new List<Vector2>();
-        for (int i = 0; i < cars; i++)
+        destination = Random.Range(0, 16);
+        Debug.Log(positions[destination]);
+        // Kitorli az kocsikat az elozo episodbol
+        foreach (var item in cars)
         {
-            int index = UnityEngine.Random.Range(0, spaces.Count);
-            ChosenCords.Add(spaces[index]);
-            spaces.RemoveAt(index);
-
+            Debug.Log(item.ToString());
+            Destroy(item);
         }
 
-        return ChosenCords;
+        for (int i = 0; i < 16; i++)
+        {
+            
+            // Skips destination position
+            if (i == destination)
+            {
+                continue;
+            }
+            
+            float carSpawn = Random.Range(0f, 1f);
+            /*
+            // Randomize color
+            if (carSpawn < 0.2f)
+            {
+                parkingCar = parkingCar0;
+            }
+            else if (carSpawn < 0.4f)
+            {
+                parkingCar = parkingCar1;
+            }
+            else if (carSpawn < 0.6f)
+            {
+                parkingCar = parkingCar2;
+            }
+            else if (carSpawn < 0.8f)
+            {
+                parkingCar = parkingCar3;
+            }
+            else
+            {
+                parkingCar = parkingCar4;
+            }
+            */
 
-
+            // Randomize which positions are occupied
+            if (carSpawn < 0.25f)
+            {
+                GameObject car = Instantiate(parkingCar, positions[i], Quaternion.Euler(0,-90,0));
+                cars.Add(car);
+            }
+            else if (carSpawn < 0.5f)
+            {
+                GameObject car = Instantiate(parkingCar, positions[i], Quaternion.Euler(0,90,0));
+                cars.Add(car);
+            }
+            /*
+            foreach (var item in cars)
+            {
+                Debug.Log(item.transform.localRotation.eulerAngles.y);
+            }
+            */
+        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        // Az agens pozicioja
+        sensor.AddObservation(transform.localPosition.x);
+        sensor.AddObservation(transform.localPosition.z);
+
+        // A target pozicioja
+        sensor.AddObservation(positions[destination][0]);
+        sensor.AddObservation(positions[destination][2]);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        
+        var actionTaken = actions.ContinuousActions;
+        steering = actionTaken[0];
+        brake = actionTaken[1];
+        gas = actionTaken[2];
+
+        float distance = Vector3.Distance(transform.localPosition, positions[destination]);
+        float reward = 1 / distance;
+        reward = reward / 10;
+        AddReward(reward);
+
+        CheckForOutOfBounds();
+        CheckForSuccessfulParking();
+
+    }
+    private void CheckForOutOfBounds()
+    {
+        if (transform.localPosition.y < -2)
+        {
+            AddReward(-1);
+            EndEpisode();
+        }
+    }
+    private void CheckForSuccessfulParking()
+    {
+        float marginOfErrorPosition = 1f;
+        float marginOfErrorRotation = 15f;
+        if (transform.localPosition.x < positions[destination][0] + marginOfErrorPosition && transform.localPosition.x > positions[destination][0] - marginOfErrorPosition
+            && transform.localPosition.z < positions[destination][2] + marginOfErrorPosition && transform.localPosition.z > positions[destination][2] - marginOfErrorPosition
+            && ((transform.localRotation.eulerAngles.y < 90 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 90 - marginOfErrorRotation) || (transform.localRotation.eulerAngles.y < 270 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 270 - marginOfErrorRotation)))
+        {
+            AddReward(1);
+            EndEpisode();
+        }
     }
 
+    // Debug
     public override void Heuristic(in ActionBuffers actionsOut)
     {
        
     }
 
-
     private void OnCollisionEnter(Collision collision)
     {
-       
+    
     }
-
-
-
-
-
-
-
 }
