@@ -109,7 +109,7 @@ public class MyAgent : Agent
     {
         var actionTaken = actions.ContinuousActions;
         steering = actionTaken[0];
-        brake = actionTaken[1];
+        brakes = actionTaken[1];
         gas = actionTaken[2];
 
         float distance = Vector3.Distance(transform.localPosition, positions[destination]);
