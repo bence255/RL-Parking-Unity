@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class PrometeoCarController : MonoBehaviour
 {
 
@@ -47,6 +48,7 @@ public class PrometeoCarController : MonoBehaviour
                                     // Usually the y value goes from 0 to 1.5.
 
     //WHEELS
+
 
       //[Header("WHEELS")]
 
@@ -159,12 +161,34 @@ public class PrometeoCarController : MonoBehaviour
       float RRWextremumSlip;
 
     // Start is called before the first frame update
+    
+
+
+    GameObject go;
+    MyAgent agent;
+
+    // az agens outputjai
+    private float gas = 0f;
+    private float brakes = 0f;
+    private float steering = 0f;
+
+
+
     void Start()
     {
-      //In this part, we set the 'carRigidbody' value with the Rigidbody attached to this
-      //gameObject. Also, we define the center of mass of the car with the Vector3 given
-      //in the inspector.
-      carRigidbody = gameObject.GetComponent<Rigidbody>();
+
+        //setup az agens outputjainak olvasasahoz
+       go = GameObject.Find("car");
+       agent = go.GetComponent<MyAgent>();
+
+
+
+
+
+        //In this part, we set the 'carRigidbody' value with the Rigidbody attached to this
+        //gameObject. Also, we define the center of mass of the car with the Vector3 given
+        //in the inspector.
+        carRigidbody = gameObject.GetComponent<Rigidbody>();
       carRigidbody.centerOfMass = bodyMassCenter;
 
       //Initial setup to calculate the drift value of the car. This part could look a bit
@@ -265,11 +289,21 @@ public class PrometeoCarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Minden frame-nel atvesszuk az agenstol az outputokat
 
-      //CAR DATA
+        this.gas = agent.gas;
+        this.steering = agent.steering;
+        this.brakes = agent.brakes;
 
-      // We determine the speed of the car.
-      carSpeed = (2 * Mathf.PI * frontLeftCollider.radius * frontLeftCollider.rpm * 60) / 1000;
+        
+
+
+
+
+        //CAR DATA
+
+        // We determine the speed of the car.
+        carSpeed = (2 * Mathf.PI * frontLeftCollider.radius * frontLeftCollider.rpm * 60) / 1000;
       // Save the local velocity of the car in the x axis. Used to know if the car is drifting.
       localVelocityX = transform.InverseTransformDirection(carRigidbody.velocity).x;
       // Save the local velocity of the car in the z axis. Used to know if the car is going forward or backwards.
@@ -287,6 +321,10 @@ public class PrometeoCarController : MonoBehaviour
       In this part of the code we specify what the car needs to do if the user presses W (throttle), S (reverse),
       A (turn left), D (turn right) or Space bar (handbrake).
       */
+
+
+
+        // ezt a reszt kihagytam mert nem hasznalunk touch controlokat
       if (useTouchControls && touchControlsSetup){
 
         if(throttlePTI.buttonPressed){
@@ -327,21 +365,24 @@ public class PrometeoCarController : MonoBehaviour
 
       }else{
 
-        if(Input.GetKey(KeyCode.W)){
+            //lenyomott gombok helyett az agens outputjait irtam a feltetelekbe.
+            //a keycode.space-t nem irtam at mert azt nem fogja hasznalni az agens. Kesobb lehet ki kene torolni de elvileg nincs hatasa.
+
+        if(this.gas > 0f){
           CancelInvoke("DecelerateCar");
           deceleratingCar = false;
           GoForward();
         }
-        if(Input.GetKey(KeyCode.S)){
+        if(this.brakes > 0f){
           CancelInvoke("DecelerateCar");
           deceleratingCar = false;
           GoReverse();
         }
 
-        if(Input.GetKey(KeyCode.A)){
+        if(this.steering < 0f){
           TurnLeft();
         }
-        if(Input.GetKey(KeyCode.D)){
+        if(this.steering > 0f){
           TurnRight();
         }
         if(Input.GetKey(KeyCode.Space)){
@@ -352,14 +393,14 @@ public class PrometeoCarController : MonoBehaviour
         if(Input.GetKeyUp(KeyCode.Space)){
           RecoverTraction();
         }
-        if((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W))){
+        if(this.brakes == 0 && this.gas == 0){ 
           ThrottleOff();
         }
-        if((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)) && !Input.GetKey(KeyCode.Space) && !deceleratingCar){
+        if(this.brakes == 0 && this.gas == 0 && !Input.GetKey(KeyCode.Space) && !deceleratingCar){ //Ezt a sort meg atgondolom
           InvokeRepeating("DecelerateCar", 0f, 0.1f);
           deceleratingCar = true;
         }
-        if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && steeringAxis != 0f){
+        if(this.steering == 0 && steeringAxis != 0f){
           ResetSteeringAngle();
         }
 
@@ -425,7 +466,13 @@ public class PrometeoCarController : MonoBehaviour
     //The following method turns the front car wheels to the left. The speed of this movement will depend on the steeringSpeed variable.
     public void TurnLeft(){
       steeringAxis = steeringAxis - (Time.deltaTime * 10f * steeringSpeed);
-      if(steeringAxis < -1f){
+        //a steeringAxis erteke mindig 0 es 1 kozotti ertek. Ha kisebb lenne mint az agens outputja akkor visszaallitjuk az agens outputjara
+        if (steeringAxis < this.steering)
+        {
+            steeringAxis = this.steering;
+        }
+
+        if (steeringAxis < -1f){
         steeringAxis = -1f;
       }
       var steeringAngle = steeringAxis * maxSteeringAngle;
@@ -436,6 +483,14 @@ public class PrometeoCarController : MonoBehaviour
     //The following method turns the front car wheels to the right. The speed of this movement will depend on the steeringSpeed variable.
     public void TurnRight(){
       steeringAxis = steeringAxis + (Time.deltaTime * 10f * steeringSpeed);
+
+        //a steeringAxis erteke mindig 0 es 1 kozotti ertek. Ha nagyobb lenne mint az agens outputja akkor visszaallitjuk az agens outputjara
+
+        if (steeringAxis > this.steering)
+        {
+            steeringAxis = this.steering;
+        }
+
       if(steeringAxis > 1f){
         steeringAxis = 1f;
       }
@@ -446,7 +501,7 @@ public class PrometeoCarController : MonoBehaviour
 
     //The following method takes the front car wheels to their default position (rotation = 0). The speed of this movement will depend
     // on the steeringSpeed variable.
-    public void ResetSteeringAngle(){
+    public void ResetSteeringAngle(){ //meg kene nezni hogy ez mikor van meghivva
       if(steeringAxis < 0f){
         steeringAxis = steeringAxis + (Time.deltaTime * 10f * steeringSpeed);
       }else if(steeringAxis > 0f){
@@ -508,6 +563,16 @@ public class PrometeoCarController : MonoBehaviour
       }
       // The following part sets the throttle power to 1 smoothly.
       throttleAxis = throttleAxis + (Time.deltaTime * 3f);
+
+        // A throttleAxis alapbol is egy 0 es 1 kozotti ertek.
+        // az egyel lejebbi if mintajara ha a throttleAxis nagyobb lenne mint az agens outputja
+        // akkor visszaallitjuk az agens outputjara
+
+        if (throttleAxis > this.gas)
+        {
+            throttleAxis = this.gas;
+        }
+
       if(throttleAxis > 1f){
         throttleAxis = 1f;
       }
@@ -517,7 +582,7 @@ public class PrometeoCarController : MonoBehaviour
       if(localVelocityZ < -1f){
         Brakes();
       }else{
-        if(Mathf.RoundToInt(carSpeed) < maxSpeed){
+        if(Mathf.RoundToInt(carSpeed) < maxSpeed){ 
           //Apply positive torque in all wheels to go forward if maxSpeed has not been reached.
           frontLeftCollider.brakeTorque = 0;
           frontLeftCollider.motorTorque = (accelerationMultiplier * 50f) * throttleAxis;
@@ -552,6 +617,14 @@ public class PrometeoCarController : MonoBehaviour
       }
       // The following part sets the throttle power to -1 smoothly.
       throttleAxis = throttleAxis - (Time.deltaTime * 3f);
+
+        // ugyan az mint a GoForward()-ban
+        if (throttleAxis > this.brakes)
+        {
+            throttleAxis = this.brakes;
+        }
+
+
       if(throttleAxis < -1f){
         throttleAxis = -1f;
       }
@@ -629,10 +702,13 @@ public class PrometeoCarController : MonoBehaviour
 
     // This function applies brake torque to the wheels according to the brake force given by the user.
     public void Brakes(){
-      frontLeftCollider.brakeTorque = brakeForce;
-      frontRightCollider.brakeTorque = brakeForce;
-      rearLeftCollider.brakeTorque = brakeForce;
-      rearRightCollider.brakeTorque = brakeForce;
+
+        //alapbol mindegyik sor: frontLeftCollider.brakeTorque = brakeForce; helyette a brakeforceot szorozzuk az agens 0 es 1 kozotti outputjaval
+
+       frontLeftCollider.brakeTorque = brakeForce * this.brakes;
+      frontRightCollider.brakeTorque = brakeForce * this.brakes;
+      rearLeftCollider.brakeTorque = brakeForce * this.brakes;
+      rearRightCollider.brakeTorque = brakeForce * this.brakes;
     }
 
     // This function is used to make the car lose traction. By using this, the car will start drifting. The amount of traction lost

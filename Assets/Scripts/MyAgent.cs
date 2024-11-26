@@ -8,16 +8,16 @@ using Unity.MLAgents.Sensors;
 using Unity.VisualScripting;
 
 
-public class MyAgent1 : Agent
+public class MyAgent : Agent
 {
 
     
 
 
     //Azert publicok mert a car controller igy tudja majd olvasni
-    public float steering = 0;
-    public float brake = 0;
-    public float gas = 0;
+    public float steering = 0f;
+    public float brakes = 0f;
+    public float gas = 0f;
 
     public Transform TargetTransform;
 
