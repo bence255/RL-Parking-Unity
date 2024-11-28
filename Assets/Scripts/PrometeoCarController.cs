@@ -178,7 +178,7 @@ public class PrometeoCarController : MonoBehaviour
     {
 
         //setup az agens outputjainak olvasasahoz
-       go = GameObject.Find("car");
+       go = GameObject.Find("Car");
        agent = go.GetComponent<MyAgent>();
 
 
@@ -287,7 +287,7 @@ public class PrometeoCarController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //Minden frame-nel atvesszuk az agenstol az outputokat
 
@@ -465,7 +465,7 @@ public class PrometeoCarController : MonoBehaviour
 
     //The following method turns the front car wheels to the left. The speed of this movement will depend on the steeringSpeed variable.
     public void TurnLeft(){
-      steeringAxis = steeringAxis - (Time.deltaTime * 10f * steeringSpeed);
+      steeringAxis = steeringAxis - (Time.fixedDeltaTime * 10f * steeringSpeed);
         //a steeringAxis erteke mindig 0 es 1 kozotti ertek. Ha kisebb lenne mint az agens outputja akkor visszaallitjuk az agens outputjara
         if (steeringAxis < this.steering)
         {
@@ -482,7 +482,7 @@ public class PrometeoCarController : MonoBehaviour
 
     //The following method turns the front car wheels to the right. The speed of this movement will depend on the steeringSpeed variable.
     public void TurnRight(){
-      steeringAxis = steeringAxis + (Time.deltaTime * 10f * steeringSpeed);
+      steeringAxis = steeringAxis + (Time.fixedDeltaTime * 10f * steeringSpeed);
 
         //a steeringAxis erteke mindig 0 es 1 kozotti ertek. Ha nagyobb lenne mint az agens outputja akkor visszaallitjuk az agens outputjara
 
@@ -503,9 +503,9 @@ public class PrometeoCarController : MonoBehaviour
     // on the steeringSpeed variable.
     public void ResetSteeringAngle(){ //meg kene nezni hogy ez mikor van meghivva
       if(steeringAxis < 0f){
-        steeringAxis = steeringAxis + (Time.deltaTime * 10f * steeringSpeed);
+        steeringAxis = steeringAxis + (Time.fixedDeltaTime * 10f * steeringSpeed);
       }else if(steeringAxis > 0f){
-        steeringAxis = steeringAxis - (Time.deltaTime * 10f * steeringSpeed);
+        steeringAxis = steeringAxis - (Time.fixedDeltaTime * 10f * steeringSpeed);
       }
       if(Mathf.Abs(frontLeftCollider.steerAngle) < 1f){
         steeringAxis = 0f;
@@ -562,7 +562,7 @@ public class PrometeoCarController : MonoBehaviour
         DriftCarPS();
       }
       // The following part sets the throttle power to 1 smoothly.
-      throttleAxis = throttleAxis + (Time.deltaTime * 3f);
+      throttleAxis = throttleAxis + (Time.fixedDeltaTime * 3f);
 
         // A throttleAxis alapbol is egy 0 es 1 kozotti ertek.
         // az egyel lejebbi if mintajara ha a throttleAxis nagyobb lenne mint az agens outputja
@@ -616,7 +616,7 @@ public class PrometeoCarController : MonoBehaviour
         DriftCarPS();
       }
       // The following part sets the throttle power to -1 smoothly.
-      throttleAxis = throttleAxis - (Time.deltaTime * 3f);
+      throttleAxis = throttleAxis - (Time.fixedDeltaTime * 3f);
 
         // ugyan az mint a GoForward()-ban
         if (throttleAxis > this.brakes)
@@ -678,9 +678,9 @@ public class PrometeoCarController : MonoBehaviour
       // The following part resets the throttle power to 0 smoothly.
       if(throttleAxis != 0f){
         if(throttleAxis > 0f){
-          throttleAxis = throttleAxis - (Time.deltaTime * 10f);
+          throttleAxis = throttleAxis - (Time.fixedDeltaTime * 10f);
         }else if(throttleAxis < 0f){
-            throttleAxis = throttleAxis + (Time.deltaTime * 10f);
+            throttleAxis = throttleAxis + (Time.fixedDeltaTime * 10f);
         }
         if(Mathf.Abs(throttleAxis) < 0.15f){
           throttleAxis = 0f;
@@ -718,8 +718,8 @@ public class PrometeoCarController : MonoBehaviour
       CancelInvoke("RecoverTraction");
       // We are going to start losing traction smoothly, there is were our 'driftingAxis' variable takes
       // place. This variable will start from 0 and will reach a top value of 1, which means that the maximum
-      // drifting value has been reached. It will increase smoothly by using the variable Time.deltaTime.
-      driftingAxis = driftingAxis + (Time.deltaTime);
+      // drifting value has been reached. It will increase smoothly by using the variable Time.fixedDeltaTime.
+      driftingAxis = driftingAxis + (Time.fixedDeltaTime);
       float secureStartingPoint = driftingAxis * FLWextremumSlip * handbrakeDriftMultiplier;
 
       if(secureStartingPoint < FLWextremumSlip){
@@ -807,7 +807,7 @@ public class PrometeoCarController : MonoBehaviour
     // This function is used to recover the traction of the car when the user has stopped using the car's handbrake.
     public void RecoverTraction(){
       isTractionLocked = false;
-      driftingAxis = driftingAxis - (Time.deltaTime / 1.5f);
+      driftingAxis = driftingAxis - (Time.fixedDeltaTime / 1.5f);
       if(driftingAxis < 0f){
         driftingAxis = 0f;
       }
@@ -828,7 +828,7 @@ public class PrometeoCarController : MonoBehaviour
         RRwheelFriction.extremumSlip = RRWextremumSlip * handbrakeDriftMultiplier * driftingAxis;
         rearRightCollider.sidewaysFriction = RRwheelFriction;
 
-        Invoke("RecoverTraction", Time.deltaTime);
+        Invoke("RecoverTraction", Time.fixedDeltaTime);
 
       }else if (FLwheelFriction.extremumSlip < FLWextremumSlip){
         FLwheelFriction.extremumSlip = FLWextremumSlip;

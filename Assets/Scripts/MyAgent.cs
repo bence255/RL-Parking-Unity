@@ -31,15 +31,19 @@ public class MyAgent : Agent
 
     public override void OnEpisodeBegin()
     {
+        // Reseteli az agens poziciojat
+        //transform.localPosition = new Vector3(-2f, -5.5f, -11f);
+        
         destination = Random.Range(0, 16);
         Debug.Log(positions[destination]);
+        
         // Kitorli az kocsikat az elozo episodbol
         foreach (var item in cars)
         {
             Debug.Log(item.ToString());
             Destroy(item);
         }
-
+        
         for (int i = 0; i < 16; i++)
         {
             
@@ -103,10 +107,14 @@ public class MyAgent : Agent
         // A target pozicioja
         sensor.AddObservation(positions[destination][0]);
         sensor.AddObservation(positions[destination][2]);
+
+        // Az agens iranya
+        sensor.AddObservation(transform.localRotation.eulerAngles.y);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        Debug.Log("Paraszt debug");
         var actionTaken = actions.ContinuousActions;
         steering = actionTaken[0];
         brakes = actionTaken[1];
