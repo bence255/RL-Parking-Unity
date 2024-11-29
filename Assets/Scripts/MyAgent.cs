@@ -7,6 +7,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using Unity.VisualScripting;
 using System.Threading.Tasks;
+using System;
 
 
 public class MyAgent : Agent
@@ -26,7 +27,8 @@ public class MyAgent : Agent
     */
 
     public Vector3[] positions;
-    List<GameObject> cars = new List<GameObject>();
+    //List<GameObject> cars = new List<GameObject>();
+    private GameObject[] parkedCars = new GameObject[16];
 
     private int destination = 0;
     private int counter = 0;
@@ -46,33 +48,26 @@ public class MyAgent : Agent
         //Debug.Log(positions[destination]);
         destination = 6;
 
-        
-
-            // Kitorli az kocsikat az elozo episodbol
-            foreach (var item in cars)
+            for (int i = 0; i < 16; i++)
             {
-                //Debug.Log(item.ToString());
-                //Destroy(item);
-            }
-            
-
-            for (int i = 0; i < 4; i++)
-            {
-
-                // Skips destination position
-                if (i == destination)
+                bool carSpawn = false;
+                if (UnityEngine.Random.Range(0f, 1f) < 0.5f && i!=destination)
                 {
-                    continue;
+                    carSpawn = true;
+                    Debug.Log(carSpawn);
                 }
-
-                float carSpawn = Random.Range(0f, 1f);
-
-
-                if (carSpawn < 0.5f && counter == 0)
+                // Kitorli a kocsit
+                if (!carSpawn && parkedCars[i])
                 {
+                    Debug.Log("Spawn a car");
+                    Destroy(parkedCars[i]);
+                }
+                // Hozzadja a kocsit
+                if (carSpawn && !parkedCars[i])
+                {
+                    Debug.Log("Despawn a car");
                     GameObject car = Instantiate(parkingCar, positions[i], Quaternion.Euler(0, 90, 0));
-                    cars.Add(car);
-                   
+                    parkedCars[i] = car;
                 }
             }
 
