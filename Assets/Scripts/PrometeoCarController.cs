@@ -293,7 +293,7 @@ public class PrometeoCarController : MonoBehaviour
 
         this.gas = agent.gas;
         this.steering = agent.steering;
-        this.brakes = agent.brakes;
+        //this.brakes = agent.brakes;
 
         
 
@@ -373,7 +373,7 @@ public class PrometeoCarController : MonoBehaviour
           deceleratingCar = false;
           GoForward();
         }
-        if(this.brakes > 0f){
+        if(this.gas < 0f){
           CancelInvoke("DecelerateCar");
           deceleratingCar = false;
           GoReverse();
@@ -393,10 +393,10 @@ public class PrometeoCarController : MonoBehaviour
         if(Input.GetKeyUp(KeyCode.Space)){
           RecoverTraction();
         }
-        if(this.brakes == 0 && this.gas == 0){ 
+        if(this.gas == 0){ 
           ThrottleOff();
         }
-        if(this.brakes == 0 && this.gas == 0 && !Input.GetKey(KeyCode.Space) && !deceleratingCar){ //Ezt a sort meg atgondolom
+        if(this.gas == 0 && !Input.GetKey(KeyCode.Space) && !deceleratingCar){ //Ezt a sort meg atgondolom
           InvokeRepeating("DecelerateCar", 0f, 0.1f);
           deceleratingCar = true;
         }
@@ -606,8 +606,10 @@ public class PrometeoCarController : MonoBehaviour
 
     // This method apply negative torque to the wheels in order to go backwards.
     public void GoReverse(){
-      //If the forces aplied to the rigidbody in the 'x' asis are greater than
-      //3f, it means that the car is losing traction, then the car will start emitting particle systems.
+        //If the forces aplied to the rigidbody in the 'x' asis are greater than
+        //3f, it means that the car is losing traction, then the car will start emitting particle systems.
+        this.brakes = -1f * (this.gas);
+
       if(Mathf.Abs(localVelocityX) > 2.5f){
         isDrifting = true;
         DriftCarPS();

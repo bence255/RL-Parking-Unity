@@ -322,7 +322,7 @@ GameObject:
   - component: {fileID: 1016151393840242557}
   m_Layer: 0
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: ParkingCar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -497,7 +497,7 @@ GameObject:
   - component: {fileID: 7495443279060062592}
   m_Layer: 0
   m_Name: Free Racing Car
-  m_TagString: Untagged
+  m_TagString: ParkingCar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -6,6 +6,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using Unity.VisualScripting;
+using System.Threading.Tasks;
 
 
 public class MyAgent : Agent
@@ -28,74 +29,62 @@ public class MyAgent : Agent
     List<GameObject> cars = new List<GameObject>();
 
     private int destination = 0;
+    private int counter = 0;
+
 
     public override void OnEpisodeBegin()
     {
-        // Reseteli az agens poziciojat
-        //transform.localPosition = new Vector3(-2f, -5.5f, -11f);
-        
-        destination = Random.Range(0, 16);
-        Debug.Log(positions[destination]);
-        
-        // Kitorli az kocsikat az elozo episodbol
-        foreach (var item in cars)
-        {
-            Debug.Log(item.ToString());
-            Destroy(item);
-        }
-        
-        for (int i = 0; i < 16; i++)
-        {
-            
-            // Skips destination position
-            if (i == destination)
-            {
-                continue;
-            }
-            
-            float carSpawn = Random.Range(0f, 1f);
-            /*
-            // Randomize color
-            if (carSpawn < 0.2f)
-            {
-                parkingCar = parkingCar0;
-            }
-            else if (carSpawn < 0.4f)
-            {
-                parkingCar = parkingCar1;
-            }
-            else if (carSpawn < 0.6f)
-            {
-                parkingCar = parkingCar2;
-            }
-            else if (carSpawn < 0.8f)
-            {
-                parkingCar = parkingCar3;
-            }
-            else
-            {
-                parkingCar = parkingCar4;
-            }
-            */
 
-            // Randomize which positions are occupied
-            if (carSpawn < 0.25f)
-            {
-                GameObject car = Instantiate(parkingCar, positions[i], Quaternion.Euler(0,-90,0));
-                cars.Add(car);
-            }
-            else if (carSpawn < 0.5f)
-            {
-                GameObject car = Instantiate(parkingCar, positions[i], Quaternion.Euler(0,90,0));
-                cars.Add(car);
-            }
-            /*
+        Debug.Log("fut-episodebegin");
+        
+        //Visszateszi az autot a kezdo pozicioba
+        transform.localPosition = new Vector3(-2f, -5.88f, -10f);
+        transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+
+        //destination = Random.Range(0, 16);
+        //Debug.Log(positions[destination]);
+        destination = 6;
+
+        
+
+            // Kitorli az kocsikat az elozo episodbol
             foreach (var item in cars)
             {
-                Debug.Log(item.transform.localRotation.eulerAngles.y);
+                //Debug.Log(item.ToString());
+                //Destroy(item);
             }
-            */
-        }
+            
+
+            for (int i = 0; i < 4; i++)
+            {
+
+                // Skips destination position
+                if (i == destination)
+                {
+                    continue;
+                }
+
+                float carSpawn = Random.Range(0f, 1f);
+
+
+                if (carSpawn < 0.5f && counter == 0)
+                {
+                    GameObject car = Instantiate(parkingCar, positions[i], Quaternion.Euler(0, 90, 0));
+                    cars.Add(car);
+                   
+                }
+            }
+
+
+        counter++;
+
+        
+
+        
+
+
+
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -114,14 +103,17 @@ public class MyAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        Debug.Log("Paraszt debug");
+        //Debug.Log("Paraszt debug");
         var actionTaken = actions.ContinuousActions;
         steering = actionTaken[0];
-        brakes = actionTaken[1];
-        gas = actionTaken[2];
+        //brakes = actionTaken[1];
+        gas = actionTaken[1];
+
+        //Debug.Log("steering: "+actionTaken[0]);
+        //Debug.Log("gas: "+actionTaken[1]);
 
         float distance = Vector3.Distance(transform.localPosition, positions[destination]);
-        float reward = 1 / distance;
+        float reward = 1/distance;
         reward = reward / 10;
         AddReward(reward);
 
@@ -131,9 +123,17 @@ public class MyAgent : Agent
     }
     private void CheckForOutOfBounds()
     {
-        if (transform.localPosition.y < -2)
+        if (transform.localPosition.y < -7)
         {
+            Debug.Log("y out of bounds");
             AddReward(-1);
+            EndEpisode();
+        }
+
+        if (transform.localPosition.z < -11)
+        {
+            Debug.Log("z out of bounds");
+            AddReward(-10);
             EndEpisode();
         }
     }
@@ -143,9 +143,10 @@ public class MyAgent : Agent
         float marginOfErrorRotation = 15f;
         if (transform.localPosition.x < positions[destination][0] + marginOfErrorPosition && transform.localPosition.x > positions[destination][0] - marginOfErrorPosition
             && transform.localPosition.z < positions[destination][2] + marginOfErrorPosition && transform.localPosition.z > positions[destination][2] - marginOfErrorPosition
-            && ((transform.localRotation.eulerAngles.y < 90 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 90 - marginOfErrorRotation) || (transform.localRotation.eulerAngles.y < 270 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 270 - marginOfErrorRotation)))
+            && ((transform.localRotation.eulerAngles.y < 90 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 90 - marginOfErrorRotation) || (transform.localRotation.eulerAngles.y < 270 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 270 - marginOfErrorRotation))
+             )
         {
-            AddReward(1);
+            AddReward(1000);
             EndEpisode();
         }
     }
@@ -158,6 +159,12 @@ public class MyAgent : Agent
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.collider.tag == "ParkingCar") 
+        {
+            AddReward(-1);
+            EndEpisode();
+        }
+        
     
     }
 }
