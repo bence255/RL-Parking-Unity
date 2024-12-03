@@ -40,12 +40,12 @@ public class MyAgent : Agent
         
         //Visszateszi az autot a kezdo pozicioba
         transform.localPosition = new Vector3(-2f, -5.88f, -10f);
-        transform.localRotation = Quaternion.Euler(0, 180, 0);
+        transform.localRotation = Quaternion.Euler(0, 0, 0);
 
 
         //destination = Random.Range(0, 16);
         //Debug.Log(positions[destination]);
-        destination = 6;
+        destination = 7;
 
             for (int i = 0; i < 16; i++)
             {
@@ -74,13 +74,12 @@ public class MyAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // Az agens pozicioja
-        sensor.AddObservation(transform.localPosition.x);
-        sensor.AddObservation(transform.localPosition.z);
+        // A target - agens pozicioja
+        sensor.AddObservation(positions[destination][0] - transform.localPosition.x);
+        sensor.AddObservation(positions[destination][2] - transform.localPosition.z);
 
         // A target pozicioja
-        sensor.AddObservation(positions[destination][0]);
-        sensor.AddObservation(positions[destination][2]);
+        
 
         //Az agens es a target tavolsaga
         float distance = Vector3.Distance(transform.localPosition, positions[destination]);
@@ -132,6 +131,7 @@ public class MyAgent : Agent
 
             )
         {
+            Debug.Log("Sikeres parkolas");
             float slownessReward = 1 / (carController.localVelocityZ);
             AddReward(slownessReward);
             AddReward(100);
