@@ -6,6 +6,7 @@ TagManager:
   tags:
   - OutOfBounds
   - ParkingCar
+  - Barrier
   layers:
   - Default
   - TransparentFX
