@@ -1,0 +1,47 @@
+{
+    "parking": {
+        "checkpoints": [
+            {
+                "steps": 499953,
+                "file_path": "results\\b_parking_test9\\parking\\parking-499953.onnx",
+                "reward": null,
+                "creation_time": 1733256065.981604,
+                "auxillary_file_paths": [
+                    "results\\b_parking_test9\\parking\\parking-499953.pt"
+                ]
+            },
+            {
+                "steps": 999936,
+                "file_path": "results\\b_parking_test9\\parking\\parking-999936.onnx",
+                "reward": null,
+                "creation_time": 1733256829.2123206,
+                "auxillary_file_paths": [
+                    "results\\b_parking_test9\\parking\\parking-999936.pt"
+                ]
+            },
+            {
+                "steps": 1000064,
+                "file_path": "results\\b_parking_test9\\parking\\parking-1000064.onnx",
+                "reward": -3.8759610429406166,
+                "creation_time": 1733256829.427516,
+                "auxillary_file_paths": [
+                    "results\\b_parking_test9\\parking\\parking-1000064.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 1000064,
+            "file_path": "results\\b_parking_test9\\parking.onnx",
+            "reward": -3.8759610429406166,
+            "creation_time": 1733256829.427516,
+            "auxillary_file_paths": [
+                "results\\b_parking_test9\\parking\\parking-1000064.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

@@ -18,16 +18,8 @@ public class MyAgent : Agent
     public float gas = 0f;
 
     public GameObject parkingCar;
-    /*
-    public GameObject parkingCar0;
-    public GameObject parkingCar1;
-    public GameObject parkingCar2;
-    public GameObject parkingCar3;
-    public GameObject parkingCar4;
-    */
 
     public Vector3[] positions;
-    //List<GameObject> cars = new List<GameObject>();
     private GameObject[] parkedCars = new GameObject[16];
 
     private int destination = 0;
@@ -44,11 +36,11 @@ public class MyAgent : Agent
         carController = go.GetComponent<PrometeoCarController>();
         //Debug.Log("speed is: " + carController.localVelocityZ);
 
-        Debug.Log("episode"+ counter);
+        Debug.Log("episode");
         
         //Visszateszi az autot a kezdo pozicioba
         transform.localPosition = new Vector3(-2f, -5.88f, -10f);
-        transform.localRotation = Quaternion.Euler(0, 0, 0);
+        transform.localRotation = Quaternion.Euler(0, 180, 0);
 
 
         //destination = Random.Range(0, 16);
@@ -77,16 +69,7 @@ public class MyAgent : Agent
                     parkedCars[i] = car;
                 }
             }
-
-
         counter++;
-
-
-        
-
-
-
-
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -122,6 +105,7 @@ public class MyAgent : Agent
         float reward = 1/distance;
         reward = reward / 10;
         AddReward(reward);
+        
 
         CheckForOutOfBounds();
         CheckForSuccessfulParking();
@@ -132,36 +116,7 @@ public class MyAgent : Agent
         if (transform.localPosition.y < -7)
         {
             Debug.Log("y out of bounds");
-            AddReward(-3);
-            EndEpisode();
-        }
-
-        if (transform.localPosition.z < -15)
-        {
-            Debug.Log("z out of bounds");
-            AddReward(-3);
-            EndEpisode();
-        }
-
-        if (transform.localPosition.x < -10 | transform.localPosition.x > 10)
-        {
-            Debug.Log("z out of bounds");
-            AddReward(-3);
-            EndEpisode();
-        }
-
-
-        if (transform.localPosition.z > 8)
-        {
-            Debug.Log("z out of bounds");
-            AddReward(-3);
-            EndEpisode();
-        }
-
-        if (transform.localPosition.y < -5.9)
-        {
-            Debug.Log("y out of bounds");
-            AddReward(-3);
+            AddReward(-1);
             EndEpisode();
         }
     }
@@ -169,16 +124,17 @@ public class MyAgent : Agent
     {
 
         //&& ((transform.localRotation.eulerAngles.y < 90 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 90 - marginOfErrorRotation) || (transform.localRotation.eulerAngles.y < 270 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 270 - marginOfErrorRotation))
-        float marginOfErrorPosition = 2f;
-        float marginOfErrorRotation = 15f;
-        if (transform.localPosition.x < positions[destination][0]-2.5f + marginOfErrorPosition && transform.localPosition.x > positions[destination][0]-2.5f - marginOfErrorPosition
-            && transform.localPosition.z < positions[destination][2]-2f + marginOfErrorPosition && transform.localPosition.z > positions[destination][2]-2f - marginOfErrorPosition
-            
+        float deltaX = 3f;
+        float deltaZ = 3f;
+        //float marginOfErrorRotation = 15f;
+        if (transform.localPosition.x < positions[destination][0] + deltaX && transform.localPosition.x > positions[destination][0] - deltaX
+            && transform.localPosition.z < positions[destination][2] + deltaZ && transform.localPosition.z > positions[destination][2] - deltaZ
+
             )
         {
             float slownessReward = 1 / (carController.localVelocityZ);
             AddReward(slownessReward);
-            AddReward(10);
+            AddReward(100);
             EndEpisode();
         }
     }
@@ -200,13 +156,15 @@ public class MyAgent : Agent
     {
         if (collision.collider.tag == "ParkingCar") 
         {
-            AddReward(-3);
-            EndEpisode();
+            Debug.Log("ParkingCar collision");
+            AddReward(-0.1f);
+            //EndEpisode();
         }
 
         if (collision.collider.tag == "Barrier")
         {
-            AddReward(-3);
+            Debug.Log("Barrier collision");
+            AddReward(-1f);
             EndEpisode();
         }
 

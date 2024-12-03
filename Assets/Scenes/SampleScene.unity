@@ -359,6 +359,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4485397276047042850, guid: be03d3bdd19b8114fb10a7583c997af6, type: 3}
+      propertyPath: maxSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4485397276047042850, guid: be03d3bdd19b8114fb10a7583c997af6, type: 3}
+      propertyPath: brakeForce
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4485397276047042850, guid: be03d3bdd19b8114fb10a7583c997af6, type: 3}
+      propertyPath: steeringSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4485397276047042850, guid: be03d3bdd19b8114fb10a7583c997af6, type: 3}
+      propertyPath: maxReverseSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4485397276047042850, guid: be03d3bdd19b8114fb10a7583c997af6, type: 3}
+      propertyPath: accelerationMultiplier
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7744249999951227049, guid: be03d3bdd19b8114fb10a7583c997af6, type: 3}
+      propertyPath: DecisionPeriod
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
