@@ -46,32 +46,7 @@ public class MyAgent : Agent
 
         //destination = Random.Range(0, 16);
         //Debug.Log(positions[destination]);
-        destination = 7;
-
-            for (int i = 0; i < 16; i++)
-            {
-                bool carSpawn = false;
-                if (UnityEngine.Random.Range(0f, 1f) < 0.5f && i!=destination)
-                {
-                    carSpawn = true;
-                    //Debug.Log(carSpawn);
-                }
-                // Kitorli a kocsit
-                if (!carSpawn && parkedCars[i])
-                {
-                    //Debug.Log("Spawn a car");
-                    Destroy(parkedCars[i]);
-                }
-                // Hozzadja a kocsit
-                if (carSpawn && !parkedCars[i])
-                {
-                    //Debug.Log("Despawn a car");
-                    GameObject car = Instantiate(parkingCar, positions[i], Quaternion.Euler(0, 90, 0));
-                    parkedCars[i] = car;
-                }
-            }
-        counter++;
-
+        destination = 4;
         yRotation = 0;
         Debug.Log(Vector3.Distance(transform.localPosition, positions[destination]));
     }
@@ -136,8 +111,8 @@ public class MyAgent : Agent
     {
 
         //&& ((transform.localRotation.eulerAngles.y < 90 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 90 - marginOfErrorRotation) || (transform.localRotation.eulerAngles.y < 270 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 270 - marginOfErrorRotation))
-        float deltaX = 3f;
-        float deltaZ = 3f;
+        float deltaX = 0.75f;
+        float deltaZ = 0.75f;
         //float marginOfErrorRotation = 15f;
         if (transform.localPosition.x < positions[destination][0] + deltaX && transform.localPosition.x > positions[destination][0] - deltaX
             && transform.localPosition.z < positions[destination][2] + deltaZ && transform.localPosition.z > positions[destination][2] - deltaZ
