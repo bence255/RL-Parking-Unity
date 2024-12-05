@@ -25,15 +25,16 @@ public class MyAgent : Agent
     private int destination = 0;
     private int counter = 0;
 
-    GameObject go;
-    PrometeoCarController carController;
+    //GameObject go;
+    //PrometeoCarController carController;
 
+    private float yRotation = 0f;
 
     public override void OnEpisodeBegin()
     {
         
-        go = GameObject.Find("Car");
-        carController = go.GetComponent<PrometeoCarController>();
+        //go = GameObject.Find("Car");
+        //carController = go.GetComponent<PrometeoCarController>();
         //Debug.Log("speed is: " + carController.localVelocityZ);
 
         Debug.Log("episode");
@@ -70,23 +71,27 @@ public class MyAgent : Agent
                 }
             }
         counter++;
+
+        yRotation = 0;
+        Debug.Log(Vector3.Distance(transform.localPosition, positions[destination]));
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // A target - agens pozicioja
-        sensor.AddObservation(positions[destination][0] - transform.localPosition.x);
-        sensor.AddObservation(positions[destination][2] - transform.localPosition.z);
+        // Az agens pozicioja
+        sensor.AddObservation(transform.localPosition.x);
+        sensor.AddObservation(transform.localPosition.z);
 
         // A target pozicioja
-        
+        sensor.AddObservation(positions[destination][0]);
+        sensor.AddObservation(positions[destination][2]);
 
         //Az agens es a target tavolsaga
         float distance = Vector3.Distance(transform.localPosition, positions[destination]);
         sensor.AddObservation(distance);
 
         // Az agens iranya
-        sensor.AddObservation(transform.localRotation.eulerAngles.y);
+        //sensor.AddObservation(transform.localRotation.eulerAngles.y);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -103,8 +108,16 @@ public class MyAgent : Agent
         float distance = Vector3.Distance(transform.localPosition, positions[destination]);
         float reward = 1/distance;
         reward = reward / 10;
-        AddReward(reward);
-        
+        AddReward(reward - 0.01f);
+
+        float speed = 8;
+        transform.Translate(Vector3.forward * speed * gas * Time.fixedDeltaTime);
+
+        float rotationSpeed = 75f;
+        yRotation = yRotation + Time.fixedDeltaTime * steering * rotationSpeed;
+        transform.rotation = Quaternion.Euler(0, yRotation, 0);
+
+
 
         CheckForOutOfBounds();
         CheckForSuccessfulParking();
@@ -132,9 +145,9 @@ public class MyAgent : Agent
             )
         {
             Debug.Log("Sikeres parkolas");
-            float slownessReward = 1 / (carController.localVelocityZ);
-            AddReward(slownessReward);
-            AddReward(100);
+            //float slownessReward = 1 / (carController.localVelocityZ);
+            //AddReward(slownessReward);
+            AddReward(10);
             EndEpisode();
         }
     }
@@ -157,8 +170,8 @@ public class MyAgent : Agent
         if (collision.collider.tag == "ParkingCar") 
         {
             Debug.Log("ParkingCar collision");
-            AddReward(-0.1f);
-            //EndEpisode();
+            AddReward(-1f);
+            EndEpisode();
         }
 
         if (collision.collider.tag == "Barrier")
