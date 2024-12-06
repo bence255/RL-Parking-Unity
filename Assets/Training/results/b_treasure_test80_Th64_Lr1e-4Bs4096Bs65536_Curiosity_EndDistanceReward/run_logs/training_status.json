@@ -1,0 +1,47 @@
+{
+    "TreasureSearch": {
+        "checkpoints": [
+            {
+                "steps": 499998,
+                "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_Curiosity_EndDistanceReward\\TreasureSearch\\TreasureSearch-499998.onnx",
+                "reward": 4.620387917209882,
+                "creation_time": 1733450632.3477836,
+                "auxillary_file_paths": [
+                    "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_Curiosity_EndDistanceReward\\TreasureSearch\\TreasureSearch-499998.pt"
+                ]
+            },
+            {
+                "steps": 999959,
+                "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_Curiosity_EndDistanceReward\\TreasureSearch\\TreasureSearch-999959.onnx",
+                "reward": -1.6589342950357366,
+                "creation_time": 1733451182.467922,
+                "auxillary_file_paths": [
+                    "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_Curiosity_EndDistanceReward\\TreasureSearch\\TreasureSearch-999959.pt"
+                ]
+            },
+            {
+                "steps": 1166362,
+                "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_Curiosity_EndDistanceReward\\TreasureSearch\\TreasureSearch-1166362.onnx",
+                "reward": -1.26618075625623,
+                "creation_time": 1733451354.682806,
+                "auxillary_file_paths": [
+                    "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_Curiosity_EndDistanceReward\\TreasureSearch\\TreasureSearch-1166362.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 1166362,
+            "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_Curiosity_EndDistanceReward\\TreasureSearch.onnx",
+            "reward": -1.26618075625623,
+            "creation_time": 1733451354.682806,
+            "auxillary_file_paths": [
+                "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_Curiosity_EndDistanceReward\\TreasureSearch\\TreasureSearch-1166362.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

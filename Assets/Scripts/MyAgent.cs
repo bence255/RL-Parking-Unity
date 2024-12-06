@@ -12,43 +12,22 @@ using System;
 
 public class MyAgent : Agent
 {
-    //Azert publicok mert a car controller igy tudja majd olvasni
     public float steering = 0f;
-    public float brakes = 0f;
     public float gas = 0f;
 
-    public GameObject parkingCar;
-
-    public Vector3[] positions;
-    private GameObject[] parkedCars = new GameObject[16];
-
-    private int destination = 0;
-    private int counter = 0;
-
-    //GameObject go;
-    //PrometeoCarController carController;
-
-    private float yRotation = 0f;
+    private Vector3 destination = new Vector3(-11f, 0.09f, 7f);
+    private float previousDistance = 0f;
 
     public override void OnEpisodeBegin()
     {
-        
-        //go = GameObject.Find("Car");
-        //carController = go.GetComponent<PrometeoCarController>();
-        //Debug.Log("speed is: " + carController.localVelocityZ);
-
         Debug.Log("episode");
         
-        //Visszateszi az autot a kezdo pozicioba
-        transform.localPosition = new Vector3(-2f, -5.88f, -10f);
+        // Visszateszi az autot a kezdo pozicioba
+        transform.localPosition = new Vector3(-7f, 0.09f, -5f);
         transform.localRotation = Quaternion.Euler(0, 0, 0);
 
-
-        //destination = Random.Range(0, 16);
-        //Debug.Log(positions[destination]);
-        destination = 4;
-        yRotation = 0;
-        Debug.Log(Vector3.Distance(transform.localPosition, positions[destination]));
+        previousDistance = Vector3.Distance(transform.localPosition, destination);
+        //Debug.Log(Vector3.Distance(transform.localPosition, destination));
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -58,41 +37,37 @@ public class MyAgent : Agent
         sensor.AddObservation(transform.localPosition.z);
 
         // A target pozicioja
-        sensor.AddObservation(positions[destination][0]);
-        sensor.AddObservation(positions[destination][2]);
+        sensor.AddObservation(destination[0]);
+        sensor.AddObservation(destination[2]);
 
-        //Az agens es a target tavolsaga
-        float distance = Vector3.Distance(transform.localPosition, positions[destination]);
-        sensor.AddObservation(distance);
+        // Az agens es a target tavolsaga
+        sensor.AddObservation(Vector3.Distance(transform.localPosition, destination));
 
         // Az agens iranya
-        //sensor.AddObservation(transform.localRotation.eulerAngles.y);
+        sensor.AddObservation(transform.localRotation.eulerAngles.y);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        //Debug.Log("Paraszt debug");
+        //Debug.Log(Vector3.Distance(transform.localPosition, destination));
         var actionTaken = actions.ContinuousActions;
         steering = actionTaken[0];
-        //brakes = actionTaken[1];
         gas = actionTaken[1];
 
-        //Debug.Log("steering: "+actionTaken[0]);
-        //Debug.Log("gas: "+actionTaken[1]);
+        // Checkpoint rewards
+        float distance = Vector3.Distance(transform.localPosition, destination);
+        AddReward((previousDistance - distance) / 10);
+        previousDistance = distance;
 
-        float distance = Vector3.Distance(transform.localPosition, positions[destination]);
-        float reward = 1/distance;
-        reward = reward / 10;
-        AddReward(reward - 0.01f);
 
-        float speed = 8;
+        // Time penalty, comulative reward = -10
+        // AddReward(-0.001f);
+
+        // Car controls
+        float speed = 4;
         transform.Translate(Vector3.forward * speed * gas * Time.fixedDeltaTime);
-
-        float rotationSpeed = 75f;
-        yRotation = yRotation + Time.fixedDeltaTime * steering * rotationSpeed;
-        transform.rotation = Quaternion.Euler(0, yRotation, 0);
-
-
+        float rotationSpeed = 90f;
+        transform.rotation = Quaternion.Euler(0, transform.localRotation.eulerAngles.y + Time.fixedDeltaTime * steering * rotationSpeed, 0);
 
         CheckForOutOfBounds();
         CheckForSuccessfulParking();
@@ -109,35 +84,63 @@ public class MyAgent : Agent
     }
     private void CheckForSuccessfulParking()
     {
-
-        //&& ((transform.localRotation.eulerAngles.y < 90 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 90 - marginOfErrorRotation) || (transform.localRotation.eulerAngles.y < 270 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 270 - marginOfErrorRotation))
-        float deltaX = 0.75f;
-        float deltaZ = 0.75f;
-        //float marginOfErrorRotation = 15f;
-        if (transform.localPosition.x < positions[destination][0] + deltaX && transform.localPosition.x > positions[destination][0] - deltaX
-            && transform.localPosition.z < positions[destination][2] + deltaZ && transform.localPosition.z > positions[destination][2] - deltaZ
-
+        
+        float deltaX = 1f;
+        float deltaZ = 1f;
+        //float deltaY = 15f;
+        if (transform.localPosition.x < destination[0] + deltaX && transform.localPosition.x > destination[0] - deltaX
+            && transform.localPosition.z < destination[2] + deltaZ && transform.localPosition.z > destination[2] - deltaZ
+            // && ((transform.localRotation.eulerAngles.y < 90 + deltaY && transform.localRotation.eulerAngles.y > 90 - deltaY) || (transform.localRotation.eulerAngles.y < 270 + deltaY && transform.localRotation.eulerAngles.y > 270 - deltaY))
             )
-        {
+            {
             Debug.Log("Sikeres parkolas");
-            //float slownessReward = 1 / (carController.localVelocityZ);
-            //AddReward(slownessReward);
-            AddReward(10);
+            float rotationReward = 0;
+            int granularity = 5;
+            if (transform.rotation.eulerAngles.y < 180)
+            {
+                rotationReward = granularity / (Math.Abs(90 - transform.localRotation.eulerAngles.y) + granularity);
+            }
+            else 
+            {
+                rotationReward = granularity / (Math.Abs(270 - transform.localRotation.eulerAngles.y) + granularity);
+            }
+            float reward = rotationReward * 10 + 10;
+            AddReward(reward);
             EndEpisode();
         }
     }
 
-
-    
-    
-
-
-
-
     // Debug
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-       
+        /*
+        var action = actionsOut.ContinuousActions;
+
+        var horizontal = Input.GetAxisRaw("Horizontal");
+        var vertical = Input.GetAxisRaw("Vertical");
+
+        // ALpaertelmezett ertek
+        steering = 0;
+        gas = 0;
+
+
+        if (horizontal == -1)
+        {
+            steering = -1;
+        }
+        else if (horizontal == 1)
+        {
+            steering = 1;
+        }
+        else if (vertical == -1)
+        {
+            gas = -1;
+        }
+        else if (vertical == 1)
+        {
+            gas = 1;
+        }
+        */
     }
 
     private void OnCollisionEnter(Collision collision)
