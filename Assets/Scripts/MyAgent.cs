@@ -60,7 +60,7 @@ public class MyAgent : Agent
         previousDistance = distance;
 
 
-        // Time penalty, comulative reward = -10
+        // Time penalty, max reward = -10
         // AddReward(-0.001f);
 
         // Car controls
@@ -85,17 +85,17 @@ public class MyAgent : Agent
     private void CheckForSuccessfulParking()
     {
         
-        float deltaX = 1f;
-        float deltaZ = 1f;
-        //float deltaY = 15f;
+        float deltaX = 0.2f;
+        float deltaZ = 0.2f;
+        float deltaY = 10f;
         if (transform.localPosition.x < destination[0] + deltaX && transform.localPosition.x > destination[0] - deltaX
             && transform.localPosition.z < destination[2] + deltaZ && transform.localPosition.z > destination[2] - deltaZ
-            // && ((transform.localRotation.eulerAngles.y < 90 + deltaY && transform.localRotation.eulerAngles.y > 90 - deltaY) || (transform.localRotation.eulerAngles.y < 270 + deltaY && transform.localRotation.eulerAngles.y > 270 - deltaY))
+            && ((transform.localRotation.eulerAngles.y < 90 + deltaY && transform.localRotation.eulerAngles.y > 90 - deltaY) || (transform.localRotation.eulerAngles.y < 270 + deltaY && transform.localRotation.eulerAngles.y > 270 - deltaY))
             )
             {
             Debug.Log("Sikeres parkolas");
             float rotationReward = 0;
-            int granularity = 5;
+            int granularity = 10;
             if (transform.rotation.eulerAngles.y < 180)
             {
                 rotationReward = granularity / (Math.Abs(90 - transform.localRotation.eulerAngles.y) + granularity);
@@ -104,8 +104,8 @@ public class MyAgent : Agent
             {
                 rotationReward = granularity / (Math.Abs(270 - transform.localRotation.eulerAngles.y) + granularity);
             }
-            float reward = rotationReward * 10 + 10;
-            AddReward(reward);
+            // float reward = rotationReward * 10 + 10;
+            AddReward(10);
             EndEpisode();
         }
     }
