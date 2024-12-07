@@ -6,92 +6,28 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using Unity.VisualScripting;
+using System.Threading.Tasks;
+using System;
 
 
 public class MyAgent : Agent
 {
-    //Azert publicok mert a car controller igy tudja majd olvasni
     public float steering = 0f;
-    public float brakes = 0f;
     public float gas = 0f;
 
-    public GameObject parkingCar;
-    /*
-    public GameObject parkingCar0;
-    public GameObject parkingCar1;
-    public GameObject parkingCar2;
-    public GameObject parkingCar3;
-    public GameObject parkingCar4;
-    */
-
-    public Vector3[] positions;
-    List<GameObject> cars = new List<GameObject>();
-
-    private int destination = 0;
+    private Vector3 destination = new Vector3(-11f, 0.09f, 7f);
+    private float previousDistance = 0f;
 
     public override void OnEpisodeBegin()
     {
-        destination = Random.Range(0, 16);
-        Debug.Log(positions[destination]);
-        // Kitorli az kocsikat az elozo episodbol
-        foreach (var item in cars)
-        {
-            Debug.Log(item.ToString());
-            Destroy(item);
-        }
+        Debug.Log("episode");
+        
+        // Visszateszi az autot a kezdo pozicioba
+        transform.localPosition = new Vector3(-7f, 0.09f, -5f);
+        transform.localRotation = Quaternion.Euler(0, 0, 0);
 
-        for (int i = 0; i < 16; i++)
-        {
-            
-            // Skips destination position
-            if (i == destination)
-            {
-                continue;
-            }
-            
-            float carSpawn = Random.Range(0f, 1f);
-            /*
-            // Randomize color
-            if (carSpawn < 0.2f)
-            {
-                parkingCar = parkingCar0;
-            }
-            else if (carSpawn < 0.4f)
-            {
-                parkingCar = parkingCar1;
-            }
-            else if (carSpawn < 0.6f)
-            {
-                parkingCar = parkingCar2;
-            }
-            else if (carSpawn < 0.8f)
-            {
-                parkingCar = parkingCar3;
-            }
-            else
-            {
-                parkingCar = parkingCar4;
-            }
-            */
-
-            // Randomize which positions are occupied
-            if (carSpawn < 0.25f)
-            {
-                GameObject car = Instantiate(parkingCar, positions[i], Quaternion.Euler(0,-90,0));
-                cars.Add(car);
-            }
-            else if (carSpawn < 0.5f)
-            {
-                GameObject car = Instantiate(parkingCar, positions[i], Quaternion.Euler(0,90,0));
-                cars.Add(car);
-            }
-            /*
-            foreach (var item in cars)
-            {
-                Debug.Log(item.transform.localRotation.eulerAngles.y);
-            }
-            */
-        }
+        previousDistance = Vector3.Distance(transform.localPosition, destination);
+        //Debug.Log(Vector3.Distance(transform.localPosition, destination));
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -101,21 +37,37 @@ public class MyAgent : Agent
         sensor.AddObservation(transform.localPosition.z);
 
         // A target pozicioja
-        sensor.AddObservation(positions[destination][0]);
-        sensor.AddObservation(positions[destination][2]);
+        sensor.AddObservation(destination[0]);
+        sensor.AddObservation(destination[2]);
+
+        // Az agens es a target tavolsaga
+        sensor.AddObservation(Vector3.Distance(transform.localPosition, destination));
+
+        // Az agens iranya
+        sensor.AddObservation(transform.localRotation.eulerAngles.y);
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        //Debug.Log(Vector3.Distance(transform.localPosition, destination));
         var actionTaken = actions.ContinuousActions;
         steering = actionTaken[0];
-        brake = actionTaken[1];
-        gas = actionTaken[2];
+        gas = actionTaken[1];
 
-        float distance = Vector3.Distance(transform.localPosition, positions[destination]);
-        float reward = 1 / distance;
-        reward = reward / 10;
-        AddReward(reward);
+        // Checkpoint rewards
+        float distance = Vector3.Distance(transform.localPosition, destination);
+        AddReward((previousDistance - distance) / 10);
+        previousDistance = distance;
+
+
+        // Time penalty, max reward = -10
+        // AddReward(-0.001f);
+
+        // Car controls
+        float speed = 4;
+        transform.Translate(Vector3.forward * speed * gas * Time.fixedDeltaTime);
+        float rotationSpeed = 90f;
+        transform.rotation = Quaternion.Euler(0, transform.localRotation.eulerAngles.y + Time.fixedDeltaTime * steering * rotationSpeed, 0);
 
         CheckForOutOfBounds();
         CheckForSuccessfulParking();
@@ -123,21 +75,37 @@ public class MyAgent : Agent
     }
     private void CheckForOutOfBounds()
     {
-        if (transform.localPosition.y < -2)
+        if (transform.localPosition.y < -7)
         {
+            Debug.Log("y out of bounds");
             AddReward(-1);
             EndEpisode();
         }
     }
     private void CheckForSuccessfulParking()
     {
-        float marginOfErrorPosition = 1f;
-        float marginOfErrorRotation = 15f;
-        if (transform.localPosition.x < positions[destination][0] + marginOfErrorPosition && transform.localPosition.x > positions[destination][0] - marginOfErrorPosition
-            && transform.localPosition.z < positions[destination][2] + marginOfErrorPosition && transform.localPosition.z > positions[destination][2] - marginOfErrorPosition
-            && ((transform.localRotation.eulerAngles.y < 90 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 90 - marginOfErrorRotation) || (transform.localRotation.eulerAngles.y < 270 + marginOfErrorRotation && transform.localRotation.eulerAngles.y > 270 - marginOfErrorRotation)))
-        {
-            AddReward(1);
+        
+        float deltaX = 0.2f;
+        float deltaZ = 0.2f;
+        float deltaY = 10f;
+        if (transform.localPosition.x < destination[0] + deltaX && transform.localPosition.x > destination[0] - deltaX
+            && transform.localPosition.z < destination[2] + deltaZ && transform.localPosition.z > destination[2] - deltaZ
+            && ((transform.localRotation.eulerAngles.y < 90 + deltaY && transform.localRotation.eulerAngles.y > 90 - deltaY) || (transform.localRotation.eulerAngles.y < 270 + deltaY && transform.localRotation.eulerAngles.y > 270 - deltaY))
+            )
+            {
+            Debug.Log("Sikeres parkolas");
+            float rotationReward = 0;
+            int granularity = 10;
+            if (transform.rotation.eulerAngles.y < 180)
+            {
+                rotationReward = granularity / (Math.Abs(90 - transform.localRotation.eulerAngles.y) + granularity);
+            }
+            else 
+            {
+                rotationReward = granularity / (Math.Abs(270 - transform.localRotation.eulerAngles.y) + granularity);
+            }
+            // float reward = rotationReward * 10 + 10;
+            AddReward(10);
             EndEpisode();
         }
     }
@@ -145,11 +113,52 @@ public class MyAgent : Agent
     // Debug
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-       
+        /*
+        var action = actionsOut.ContinuousActions;
+
+        var horizontal = Input.GetAxisRaw("Horizontal");
+        var vertical = Input.GetAxisRaw("Vertical");
+
+        // ALpaertelmezett ertek
+        steering = 0;
+        gas = 0;
+
+
+        if (horizontal == -1)
+        {
+            steering = -1;
+        }
+        else if (horizontal == 1)
+        {
+            steering = 1;
+        }
+        else if (vertical == -1)
+        {
+            gas = -1;
+        }
+        else if (vertical == 1)
+        {
+            gas = 1;
+        }
+        */
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-    
+        if (collision.collider.tag == "ParkingCar") 
+        {
+            Debug.Log("ParkingCar collision");
+            AddReward(-1f);
+            EndEpisode();
+        }
+
+        if (collision.collider.tag == "Barrier")
+        {
+            Debug.Log("Barrier collision");
+            AddReward(-1f);
+            EndEpisode();
+        }
+
+
     }
 }

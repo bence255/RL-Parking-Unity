@@ -1,0 +1,65 @@
+{
+    "TreasureSearch": {
+        "checkpoints": [
+            {
+                "steps": 5499997,
+                "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-5499997.onnx",
+                "reward": 12.104129994634258,
+                "creation_time": 1733461704.4028826,
+                "auxillary_file_paths": [
+                    "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-5499997.pt"
+                ]
+            },
+            {
+                "steps": 5999999,
+                "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-5999999.onnx",
+                "reward": 12.123457158963705,
+                "creation_time": 1733462209.579077,
+                "auxillary_file_paths": [
+                    "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-5999999.pt"
+                ]
+            },
+            {
+                "steps": 6499977,
+                "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-6499977.onnx",
+                "reward": 12.13526213391227,
+                "creation_time": 1733462714.3230999,
+                "auxillary_file_paths": [
+                    "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-6499977.pt"
+                ]
+            },
+            {
+                "steps": 6999996,
+                "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-6999996.onnx",
+                "reward": 12.14926696713802,
+                "creation_time": 1733463205.5959346,
+                "auxillary_file_paths": [
+                    "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-6999996.pt"
+                ]
+            },
+            {
+                "steps": 7447036,
+                "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-7447036.onnx",
+                "reward": 12.159271886271815,
+                "creation_time": 1733463655.6020205,
+                "auxillary_file_paths": [
+                    "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-7447036.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 7447036,
+            "file_path": "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch.onnx",
+            "reward": 12.159271886271815,
+            "creation_time": 1733463655.6020205,
+            "auxillary_file_paths": [
+                "results\\b_treasure_test80_Th64_Lr1e-4Bs4096Bs65536_EndDistanceReward\\TreasureSearch\\TreasureSearch-7447036.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

@@ -322,7 +322,7 @@ GameObject:
   - component: {fileID: 1016151393840242557}
   m_Layer: 0
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: ParkingCar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -412,8 +412,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.85, y: 0.93, z: 4.34}
-  m_Center: {x: 0, y: 0.85, z: -0.018977284}
+  m_Size: {x: 1.85, y: 0.93, z: 4.38}
+  m_Center: {x: 0, y: 0.85, z: -0.11}
 --- !u!1 &3220844048195430644
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,7 +497,7 @@ GameObject:
   - component: {fileID: 7495443279060062592}
   m_Layer: 0
   m_Name: Free Racing Car
-  m_TagString: Untagged
+  m_TagString: ParkingCar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -512,7 +512,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2, y: 0, z: 4}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1792549862734306809}
@@ -528,7 +528,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3311311803080157842}
   serializedVersion: 4
-  m_Mass: 1000
+  m_Mass: 5000
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
