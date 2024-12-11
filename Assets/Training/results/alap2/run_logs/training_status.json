@@ -1,0 +1,65 @@
+{
+    "TreasureSearch": {
+        "checkpoints": [
+            {
+                "steps": 1499984,
+                "file_path": "results\\alap2\\TreasureSearch\\TreasureSearch-1499984.onnx",
+                "reward": 10.739304277186282,
+                "creation_time": 1733636480.8040648,
+                "auxillary_file_paths": [
+                    "results\\alap2\\TreasureSearch\\TreasureSearch-1499984.pt"
+                ]
+            },
+            {
+                "steps": 1999972,
+                "file_path": "results\\alap2\\TreasureSearch\\TreasureSearch-1999972.onnx",
+                "reward": 11.217085870690422,
+                "creation_time": 1733638917.2862322,
+                "auxillary_file_paths": [
+                    "results\\alap2\\TreasureSearch\\TreasureSearch-1999972.pt"
+                ]
+            },
+            {
+                "steps": 2499981,
+                "file_path": "results\\alap2\\TreasureSearch\\TreasureSearch-2499981.onnx",
+                "reward": 11.244131932088923,
+                "creation_time": 1733641317.6185238,
+                "auxillary_file_paths": [
+                    "results\\alap2\\TreasureSearch\\TreasureSearch-2499981.pt"
+                ]
+            },
+            {
+                "steps": 2999966,
+                "file_path": "results\\alap2\\TreasureSearch\\TreasureSearch-2999966.onnx",
+                "reward": 11.246051647909622,
+                "creation_time": 1733643622.3346236,
+                "auxillary_file_paths": [
+                    "results\\alap2\\TreasureSearch\\TreasureSearch-2999966.pt"
+                ]
+            },
+            {
+                "steps": 3395774,
+                "file_path": "results\\alap2\\TreasureSearch\\TreasureSearch-3395774.onnx",
+                "reward": 11.246335299083055,
+                "creation_time": 1733647596.9392238,
+                "auxillary_file_paths": [
+                    "results\\alap2\\TreasureSearch\\TreasureSearch-3395774.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 3395774,
+            "file_path": "results\\alap2\\TreasureSearch.onnx",
+            "reward": 11.246335299083055,
+            "creation_time": 1733647596.9392238,
+            "auxillary_file_paths": [
+                "results\\alap2\\TreasureSearch\\TreasureSearch-3395774.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

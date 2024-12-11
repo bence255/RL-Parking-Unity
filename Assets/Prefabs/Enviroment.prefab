@@ -3000,7 +3000,7 @@ MonoBehaviour:
   m_Model: {fileID: 5022602860645237092, guid: dffee2cd00e136447a4c3f510fd88066, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
-  m_BehaviorName: TreasureSearch
+  m_BehaviorName: parking
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
