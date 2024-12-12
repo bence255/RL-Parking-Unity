@@ -1,0 +1,65 @@
+{
+    "parking": {
+        "checkpoints": [
+            {
+                "steps": 6999984,
+                "file_path": "results\\parkolas2\\parking\\parking-6999984.onnx",
+                "reward": 11.251860765510461,
+                "creation_time": 1733726628.368456,
+                "auxillary_file_paths": [
+                    "results\\parkolas2\\parking\\parking-6999984.pt"
+                ]
+            },
+            {
+                "steps": 7499998,
+                "file_path": "results\\parkolas2\\parking\\parking-7499998.onnx",
+                "reward": 11.251698258713622,
+                "creation_time": 1733728014.6943116,
+                "auxillary_file_paths": [
+                    "results\\parkolas2\\parking\\parking-7499998.pt"
+                ]
+            },
+            {
+                "steps": 7999991,
+                "file_path": "results\\parkolas2\\parking\\parking-7999991.onnx",
+                "reward": 11.25130848636901,
+                "creation_time": 1733729387.3013678,
+                "auxillary_file_paths": [
+                    "results\\parkolas2\\parking\\parking-7999991.pt"
+                ]
+            },
+            {
+                "steps": 8499970,
+                "file_path": "results\\parkolas2\\parking\\parking-8499970.onnx",
+                "reward": 11.25114719034492,
+                "creation_time": 1733730762.6141229,
+                "auxillary_file_paths": [
+                    "results\\parkolas2\\parking\\parking-8499970.pt"
+                ]
+            },
+            {
+                "steps": 8558184,
+                "file_path": "results\\parkolas2\\parking\\parking-8558184.onnx",
+                "reward": 11.251105385487351,
+                "creation_time": 1733730913.4902172,
+                "auxillary_file_paths": [
+                    "results\\parkolas2\\parking\\parking-8558184.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 8558184,
+            "file_path": "results\\parkolas2\\parking.onnx",
+            "reward": 11.251105385487351,
+            "creation_time": 1733730913.4902172,
+            "auxillary_file_paths": [
+                "results\\parkolas2\\parking\\parking-8558184.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1733629127",
+        "python_version": "3.7.16 (default, Jan 17 2023, 16:06:28) [MSC v.1916 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\Users\\ignat\\anaconda3\\envs\\unity\\Scripts\\mlagents-learn parking.yaml --run-id=alap1",
+        "mlagents_version": "0.28.0",
+        "mlagents_envs_version": "0.28.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "1.7.1+cu110",
+        "numpy_version": "1.21.6",
+        "end_time_seconds": "1733629131"
+    },
+    "total": 4.5129799,
+    "count": 1,
+    "self": 0.009365800000000313,
+    "children": {
+        "run_training.setup": {
+            "total": 0.07614890000000007,
+            "count": 1,
+            "self": 0.07614890000000007
+        },
+        "TrainerController.start_learning": {
+            "total": 4.4274652,
+            "count": 1,
+            "self": 6.170000000071951e-05,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 4.4273915,
+                    "count": 1,
+                    "self": 4.4273915
+                },
+                "TrainerController._save_models": {
+                    "total": 1.1999999999900979e-05,
+                    "count": 1,
+                    "self": 1.1999999999900979e-05
+                }
+            }
+        }
+    }
+}

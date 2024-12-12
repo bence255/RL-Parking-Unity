@@ -1,0 +1,65 @@
+{
+    "parking": {
+        "checkpoints": [
+            {
+                "steps": 4999978,
+                "file_path": "results\\lrdec\\parking\\parking-4999978.onnx",
+                "reward": 6.380571993451347,
+                "creation_time": 1733890951.0033486,
+                "auxillary_file_paths": [
+                    "results\\lrdec\\parking\\parking-4999978.pt"
+                ]
+            },
+            {
+                "steps": 5499994,
+                "file_path": "results\\lrdec\\parking\\parking-5499994.onnx",
+                "reward": 6.594736426222822,
+                "creation_time": 1733892089.873436,
+                "auxillary_file_paths": [
+                    "results\\lrdec\\parking\\parking-5499994.pt"
+                ]
+            },
+            {
+                "steps": 5999972,
+                "file_path": "results\\lrdec\\parking\\parking-5999972.onnx",
+                "reward": 6.649158957208472,
+                "creation_time": 1733893241.941995,
+                "auxillary_file_paths": [
+                    "results\\lrdec\\parking\\parking-5999972.pt"
+                ]
+            },
+            {
+                "steps": 6499943,
+                "file_path": "results\\lrdec\\parking\\parking-6499943.onnx",
+                "reward": 4.351652376586571,
+                "creation_time": 1733894424.046774,
+                "auxillary_file_paths": [
+                    "results\\lrdec\\parking\\parking-6499943.pt"
+                ]
+            },
+            {
+                "steps": 6534831,
+                "file_path": "results\\lrdec\\parking\\parking-6534831.onnx",
+                "reward": 8.26221333166662,
+                "creation_time": 1733894493.7543232,
+                "auxillary_file_paths": [
+                    "results\\lrdec\\parking\\parking-6534831.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 6534831,
+            "file_path": "results\\lrdec\\parking.onnx",
+            "reward": 8.26221333166662,
+            "creation_time": 1733894493.7543232,
+            "auxillary_file_paths": [
+                "results\\lrdec\\parking\\parking-6534831.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.7.1+cu110"
+    }
+}
